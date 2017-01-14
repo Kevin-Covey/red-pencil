@@ -13,11 +13,15 @@ class RedPencilTest extends Specification {
 
     static final ZoneId TIME_ZONE = ZoneId.of('UTC')
 
+    Clock mockClock = Mock()
+
+    def setup() {
+        mockClock.zone >> TIME_ZONE
+    }
+
     def 'constructing a red pencil sets the price and the date of last price change to now()'() {
         given:
-        Clock mockClock = Mock()
         mockClock.instant() >> Instant.now()
-        mockClock.zone >> TIME_ZONE
 
         when:
         def redPencil = new RedPencil(6.29, mockClock)
@@ -29,9 +33,7 @@ class RedPencilTest extends Specification {
 
     def 'price reduction after 30 days starts a promotion'() {
         given:
-        Clock mockClock = Mock()
         mockClock.instant() >>> [Instant.now(), Instant.now().plus(30, DAYS)]
-        mockClock.zone >> TIME_ZONE
         def redPencil = new RedPencil(6.29, mockClock)
 
         when:
