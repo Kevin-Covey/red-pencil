@@ -7,17 +7,17 @@ class RedPencil {
 
     private final Clock clock
 
-    double price
-    double promotionalPrice
+    Double price
+    Double promotionalPrice
     LocalDate dateOfLastPriceChange
 
-    RedPencil(double price, Clock clock) {
+    RedPencil(Double price, Clock clock) {
         this.price = price
         this.clock = clock
         this.dateOfLastPriceChange = LocalDate.now(clock)
     }
 
-    void setPrice(double newPrice) {
+    void setPrice(Double newPrice) {
         promotionalPrice = newPrice
         dateOfLastPriceChange = LocalDate.now(clock)
     }
