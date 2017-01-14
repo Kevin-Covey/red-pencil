@@ -10,6 +10,12 @@ class RedPencilTest extends Specification {
 
     Clock mockClock = Mock()
 
+    def setupSpec() {
+        LocalDate.metaClass.asType = { Class<Instant> type ->
+            delegate.atStartOfDay().toInstant(ZoneOffset.UTC)
+        }
+    }
+
     def setup() {
         mockClock.zone >> TIME_ZONE
     }
@@ -29,10 +35,7 @@ class RedPencilTest extends Specification {
     def 'price reduction after 30 days starts a promotion'() {
         given:
         def dateOfPriceChange = LocalDate.of(2017, 3, 31)
-        mockClock.instant() >>> [
-                LocalDate.of(2017, 3, 1).atStartOfDay().toInstant(ZoneOffset.UTC),
-                dateOfPriceChange.atStartOfDay().toInstant(ZoneOffset.UTC)
-        ]
+        mockClock.instant() >>> [LocalDate.of(2017, 3, 1) as Instant, dateOfPriceChange as Instant]
         def redPencil = new RedPencil(6.29, mockClock)
 
         when:
@@ -47,10 +50,7 @@ class RedPencilTest extends Specification {
     def 'price reduction within 30 days does not start a promotion'() {
         given:
         def dateOfPriceChange = LocalDate.of(2017, 3, 30)
-        mockClock.instant() >>> [
-                LocalDate.of(2017, 3, 1).atStartOfDay().toInstant(ZoneOffset.UTC),
-                dateOfPriceChange.atStartOfDay().toInstant(ZoneOffset.UTC)
-        ]
+        mockClock.instant() >>> [LocalDate.of(2017, 3, 1) as Instant, dateOfPriceChange as Instant]
         def redPencil = new RedPencil(6.29, mockClock)
 
         when:
