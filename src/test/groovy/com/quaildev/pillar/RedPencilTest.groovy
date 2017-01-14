@@ -2,12 +2,7 @@ package com.quaildev.pillar
 
 import spock.lang.Specification
 
-import java.time.Clock
-import java.time.Instant
-import java.time.LocalDate
-import java.time.ZoneId
-
-import static java.time.temporal.ChronoUnit.DAYS
+import java.time.*
 
 class RedPencilTest extends Specification {
 
@@ -33,7 +28,11 @@ class RedPencilTest extends Specification {
 
     def 'price reduction after 30 days starts a promotion'() {
         given:
-        mockClock.instant() >>> [Instant.now(), Instant.now().plus(30, DAYS)]
+        def dateOfPriceChange = LocalDate.of(2017, 3, 31)
+        mockClock.instant() >>> [
+                LocalDate.of(2017, 3, 1).atStartOfDay().toInstant(ZoneOffset.UTC),
+                dateOfPriceChange.atStartOfDay().toInstant(ZoneOffset.UTC)
+        ]
         def redPencil = new RedPencil(6.29, mockClock)
 
         when:
@@ -42,12 +41,16 @@ class RedPencilTest extends Specification {
         then:
         redPencil.price == 6.29
         redPencil.promotionalPrice == 5.49
-        redPencil.dateOfLastPriceChange == LocalDate.now(TIME_ZONE).plusDays(30)
+        redPencil.dateOfLastPriceChange == dateOfPriceChange
     }
 
     def 'price reduction within 30 days does not start a promotion'() {
         given:
-        mockClock.instant() >>> [Instant.now(), Instant.now().plus(29, DAYS)]
+        def dateOfPriceChange = LocalDate.of(2017, 3, 30)
+        mockClock.instant() >>> [
+                LocalDate.of(2017, 3, 1).atStartOfDay().toInstant(ZoneOffset.UTC),
+                dateOfPriceChange.atStartOfDay().toInstant(ZoneOffset.UTC)
+        ]
         def redPencil = new RedPencil(6.29, mockClock)
 
         when:
@@ -56,7 +59,7 @@ class RedPencilTest extends Specification {
         then:
         redPencil.price == 5.49
         redPencil.promotionalPrice == null
-        redPencil.dateOfLastPriceChange == LocalDate.now(TIME_ZONE).plusDays(29)
+        redPencil.dateOfLastPriceChange == dateOfPriceChange
     }
 
 }
