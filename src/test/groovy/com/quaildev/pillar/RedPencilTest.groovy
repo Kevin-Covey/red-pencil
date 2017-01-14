@@ -45,4 +45,18 @@ class RedPencilTest extends Specification {
         redPencil.dateOfLastPriceChange == LocalDate.now(TIME_ZONE).plusDays(30)
     }
 
+    def 'price reduction within 30 days does not start a promotion'() {
+        given:
+        mockClock.instant() >>> [Instant.now(), Instant.now().plus(29, DAYS)]
+        def redPencil = new RedPencil(6.29, mockClock)
+
+        when:
+        redPencil.price = 5.49
+
+        then:
+        redPencil.price == 5.49
+        redPencil.promotionalPrice == null
+        redPencil.dateOfLastPriceChange == LocalDate.now(TIME_ZONE).plusDays(29)
+    }
+
 }
