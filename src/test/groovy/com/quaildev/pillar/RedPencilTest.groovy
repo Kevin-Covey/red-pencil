@@ -113,7 +113,7 @@ class RedPencilTest extends Specification {
     def 'promotions last at most 30 days'() {
         given:
         initialPriceDate = LocalDate.of(2017, 3, 31)
-        def priceChangeDate = initialPriceDate.plusDays(1)
+        def priceChangeDate = initialPriceDate.plusDays(30)
         def priceCheckedOn = priceChangeDate.plusDays(31)
         mockClock.instant() >>> [initialPriceDate, priceChangeDate, priceCheckedOn].collect { it as Instant }
 
