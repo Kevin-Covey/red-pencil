@@ -22,7 +22,7 @@ class RedPencil {
     }
 
     BigDecimal getPrice() {
-        if (promotionIsInProgress() && promotionIsOver()) {
+        if (promotionalPrice && promotionIsOver()) {
             endPromotion(promotionalPrice)
         }
         return price
@@ -36,7 +36,7 @@ class RedPencil {
         def today = now(clock)
         getPrice()
         if (priceChangeIsWithinPromotionBoundaries(newPrice)) {
-            if (promotionIsInProgress()) {
+            if (promotionalPrice) {
                 promotionalPrice = newPrice
             } else if (priceHasBeenStable(today)) {
                 datePromotionStarted = today
@@ -53,10 +53,6 @@ class RedPencil {
     private boolean priceChangeIsWithinPromotionBoundaries(newPrice) {
         def changePercentage = 1 - newPrice / price
         changePercentage >= 0.05 && changePercentage <= 0.30
-    }
-
-    private boolean promotionIsInProgress() {
-        promotionalPrice != null
     }
 
     private boolean priceHasBeenStable(today) {
