@@ -183,6 +183,24 @@ class RedPencilTest extends Specification {
         redPencil.dateOfLastPriceChange == dateOfSecondPriceChange
     }
 
+    def 'new promotions can start after price has been stable for 30 days'() {
+        given:
+        initialPriceDate = LocalDate.of(2017, 3, 31)
+        def dateOfFirstPriceChange = initialPriceDate.plusDays(30)
+        def dateOfSecondPriceChange = dateOfFirstPriceChange.plusDays(31)
+        mockClock.instant() >>> instants([initialPriceDate, dateOfFirstPriceChange, dateOfSecondPriceChange])
+
+        when:
+        def redPencil = new RedPencil(6.29, mockClock)
+        redPencil.price = 5.49
+        redPencil.price = 4.29
+
+        then:
+        redPencil.price == 5.49
+        redPencil.promotionalPrice == 4.29
+        redPencil.dateOfLastPriceChange == dateOfSecondPriceChange
+    }
+
     def priceChangeOccursAfter(int quantity, TemporalUnit increment) {
         initialPriceDate = LocalDate.of(2017, 3, 31)
         expectedDateOfLastPriceChange = initialPriceDate.plus(quantity, increment)
