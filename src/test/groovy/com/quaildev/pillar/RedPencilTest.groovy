@@ -40,9 +40,9 @@ class RedPencilTest extends Specification {
     def 'price reduction after 30 days starts a promotion'() {
         given:
         priceChangeOccursAfter 30, DAYS
-        def redPencil = new RedPencil(6.29, mockClock)
 
         when:
+        def redPencil = new RedPencil(6.29, mockClock)
         redPencil.price = 5.49
 
         then:
@@ -54,9 +54,9 @@ class RedPencilTest extends Specification {
     def 'price reduction within 30 days does not start a promotion'() {
         given:
         priceChangeOccursAfter 29, DAYS
-        def redPencil = new RedPencil(6.29, mockClock)
 
         when:
+        def redPencil = new RedPencil(6.29, mockClock)
         redPencil.price = 5.49
 
         then:
@@ -68,9 +68,9 @@ class RedPencilTest extends Specification {
     def 'price reduction < 5% does not start a promotion'() {
         given:
         priceChangeOccursAfter 30, DAYS
-        def redPencil = new RedPencil(10.00, mockClock)
 
         when:
+        def redPencil = new RedPencil(10.00, mockClock)
         redPencil.price = 9.51
 
         then:
@@ -82,9 +82,9 @@ class RedPencilTest extends Specification {
     def 'price reduction > 30% does not start a promotion'() {
         given:
         priceChangeOccursAfter 30, DAYS
-        def redPencil = new RedPencil(10.00, mockClock)
 
         when:
+        def redPencil = new RedPencil(10.00, mockClock)
         redPencil.price = 6.99
 
         then:
@@ -96,9 +96,9 @@ class RedPencilTest extends Specification {
     def 'price changes of exactly 5% and 30% start a promotion'() {
         given:
         priceChangeOccursAfter 30, DAYS
-        def redPencil = new RedPencil(10.00, mockClock)
 
         when:
+        def redPencil = new RedPencil(10.00, mockClock)
         redPencil.price = newPrice
 
         then:
@@ -117,10 +117,11 @@ class RedPencilTest extends Specification {
         def priceCheckedOn = priceChangeDate.plusDays(31)
         mockClock.instant() >>> [initialPriceDate, priceChangeDate, priceCheckedOn].collect { it as Instant }
 
+        when:
         def redPencil = new RedPencil(6.29, mockClock)
         redPencil.price = 5.49
 
-        expect:
+        then:
         redPencil.price == 5.49
         redPencil.promotionalPrice == null
         redPencil.dateOfLastPriceChange == priceChangeDate
@@ -133,10 +134,9 @@ class RedPencilTest extends Specification {
         def dateOfSecondPriceChange = initialPriceDate.plusDays(40)
         mockClock.instant() >>> instants([initialPriceDate, dateOfFirstPriceChange, dateOfSecondPriceChange])
 
+        when:
         def redPencil = new RedPencil(6.29, mockClock)
         redPencil.price = 5.49
-
-        when:
         redPencil.price = 5.39
 
         then:
@@ -154,11 +154,12 @@ class RedPencilTest extends Specification {
         mockClock.instant() >>>
                 instants([initialPriceDate, dateOfFirstPriceChange, dateOfSecondPriceChange, datePriceChecked])
 
+        when:
         def redPencil = new RedPencil(6.29, mockClock)
         redPencil.price = 5.49
         redPencil.price = 5.39
 
-        expect:
+        then:
         redPencil.price == 5.39
         redPencil.promotionalPrice == null
         redPencil.dateOfLastPriceChange == dateOfSecondPriceChange
