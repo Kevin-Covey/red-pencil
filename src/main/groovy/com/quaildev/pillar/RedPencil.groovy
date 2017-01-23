@@ -13,6 +13,7 @@ class RedPencil {
     BigDecimal price
     BigDecimal promotionalPrice
     LocalDate dateOfLastPriceChange
+    private LocalDate datePromotionStarted
 
     RedPencil(BigDecimal price, Clock clock) {
         this.price = price
@@ -21,9 +22,10 @@ class RedPencil {
     }
 
     BigDecimal getPrice() {
-        if (promotionalPrice != null && dateOfLastPriceChange.isBefore(now(clock).minus(30, DAYS))) {
+        if (promotionalPrice != null && datePromotionStarted.isBefore(now(clock).minus(30, DAYS))) {
             price = promotionalPrice
             promotionalPrice = null
+            datePromotionStarted = null
         }
         return price
     }
@@ -31,7 +33,10 @@ class RedPencil {
     void setPrice(BigDecimal newPrice) {
         def today = now(clock)
         if (priceChangeIsWithinPromotionBoundaries(newPrice)) {
-            if (promotionIsInProgress() || priceHasBeenStable(today)) {
+            if (promotionIsInProgress()) {
+                promotionalPrice = newPrice
+            } else if (priceHasBeenStable(today)) {
+                datePromotionStarted = today
                 promotionalPrice = newPrice
             } else {
                 price = newPrice
