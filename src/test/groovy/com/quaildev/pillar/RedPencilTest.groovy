@@ -165,6 +165,24 @@ class RedPencilTest extends Specification {
         redPencil.dateOfLastPriceChange == dateOfSecondPriceChange
     }
 
+    def 'reducing price to < 70% of original price ends promotion'() {
+        given:
+        initialPriceDate = LocalDate.of(2017, 3, 31)
+        def dateOfFirstPriceChange = initialPriceDate.plusDays(30)
+        def dateOfSecondPriceChange = initialPriceDate.plusDays(40)
+        mockClock.instant() >>> instants([initialPriceDate, dateOfFirstPriceChange, dateOfSecondPriceChange])
+
+        when:
+        def redPencil = new RedPencil(10.00, mockClock)
+        redPencil.price = 7.99
+        redPencil.price = 6.99
+
+        then:
+        redPencil.price == 6.99
+        redPencil.promotionalPrice == null
+        redPencil.dateOfLastPriceChange == dateOfSecondPriceChange
+    }
+
     def priceChangeOccursAfter(int quantity, TemporalUnit increment) {
         initialPriceDate = LocalDate.of(2017, 3, 31)
         expectedDateOfLastPriceChange = initialPriceDate.plus(quantity, increment)
