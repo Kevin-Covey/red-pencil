@@ -43,6 +43,8 @@ class RedPencil {
             }
         } else {
             price = newPrice
+            promotionalPrice = null
+            datePromotionStarted = null
         }
         dateOfLastPriceChange = today
     }
