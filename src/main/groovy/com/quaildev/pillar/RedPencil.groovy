@@ -7,17 +7,17 @@ class RedPencil {
 
     private final Clock clock
 
-    Double price
-    Double promotionalPrice
+    BigDecimal price
+    BigDecimal promotionalPrice
     LocalDate dateOfLastPriceChange
 
-    RedPencil(Double price, Clock clock) {
+    RedPencil(BigDecimal price, Clock clock) {
         this.price = price
         this.clock = clock
         this.dateOfLastPriceChange = LocalDate.now(clock)
     }
 
-    void setPrice(Double newPrice) {
+    void setPrice(BigDecimal newPrice) {
         def today = LocalDate.now(clock)
         def changePercentage = 1 - newPrice / price
         if (changePercentage >= 0.05 && changePercentage <= 0.30) {
