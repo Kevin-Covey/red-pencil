@@ -92,4 +92,22 @@ class RedPencilTest extends Specification {
         redPencil.dateOfLastPriceChange == dateOfPriceChange
     }
 
+    def 'price changes of exactly 5% and 30% start a promotion'() {
+        given:
+        def dateOfPriceChange = LocalDate.of(2017, 3, 31)
+        mockClock.instant() >>> [LocalDate.of(2017, 3, 1) as Instant, dateOfPriceChange as Instant]
+        def redPencil = new RedPencil(10.00, mockClock)
+
+        when:
+        redPencil.price = newPrice
+
+        then:
+        redPencil.price == 10.00
+        redPencil.promotionalPrice == newPrice
+        redPencil.dateOfLastPriceChange == dateOfPriceChange
+
+        where:
+        newPrice << [9.50, 7.00]
+    }
+
 }
