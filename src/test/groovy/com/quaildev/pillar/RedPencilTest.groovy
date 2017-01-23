@@ -11,6 +11,7 @@ class RedPencilTest extends Specification {
 
     static final ZoneId TIME_ZONE = ZoneId.of('UTC')
 
+    LocalDate initialPriceDate
     LocalDate expectedDateOfLastPriceChange
     Clock mockClock = Mock()
 
@@ -109,8 +110,22 @@ class RedPencilTest extends Specification {
         newPrice << [9.50, 7.00]
     }
 
+    def 'promotions last at most 30 days'() {
+        given:
+        priceChangeOccursAfter 30, DAYS
+        mockClock.instant() >> initialPriceDate.plusDays(31)
+
+        def redPencil = new RedPencil(6.29, mockClock)
+        redPencil.price = 5.49
+
+        expect:
+        redPencil.price == 5.49
+        redPencil.promotionalPrice == null
+        redPencil.dateOfLastPriceChange == expectedDateOfLastPriceChange
+    }
+
     def priceChangeOccursAfter(int quantity, TemporalUnit increment) {
-        def initialPriceDate = LocalDate.of(2017, 3, 31)
+        initialPriceDate = LocalDate.of(2017, 3, 31)
         expectedDateOfLastPriceChange = initialPriceDate.plus(quantity, increment)
         mockClock.instant() >>> [initialPriceDate, expectedDateOfLastPriceChange].collect { it as Instant }
     }
