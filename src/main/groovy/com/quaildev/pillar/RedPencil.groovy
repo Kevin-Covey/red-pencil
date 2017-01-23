@@ -24,8 +24,7 @@ class RedPencil {
     BigDecimal getPrice() {
         if (promotionalPrice != null && datePromotionStarted.isBefore(now(clock).minus(30, DAYS))) {
             price = promotionalPrice
-            promotionalPrice = null
-            datePromotionStarted = null
+            endPromotion()
         }
         return price
     }
@@ -43,8 +42,7 @@ class RedPencil {
             }
         } else {
             price = newPrice
-            promotionalPrice = null
-            datePromotionStarted = null
+            endPromotion()
         }
         dateOfLastPriceChange = today
     }
@@ -60,6 +58,11 @@ class RedPencil {
 
     private boolean priceHasBeenStable(LocalDate today) {
         today.isAfter(dateOfLastPriceChange.plusDays(29))
+    }
+
+    private void endPromotion() {
+        promotionalPrice = null
+        datePromotionStarted = null
     }
 
 }
