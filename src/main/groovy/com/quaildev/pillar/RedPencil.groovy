@@ -30,9 +30,8 @@ class RedPencil {
 
     void setPrice(BigDecimal newPrice) {
         def today = now(clock)
-        def changePercentage = 1 - newPrice / price
-        if (changePercentage >= 0.05 && changePercentage <= 0.30) {
-            if (promotionalPrice != null || today.isAfter(dateOfLastPriceChange.plusDays(29))) {
+        if (priceChangeIsWithinPromotionBoundaries(newPrice)) {
+            if (promotionIsInProgress() || priceHasBeenStable(today)) {
                 promotionalPrice = newPrice
             } else {
                 price = newPrice
@@ -41,6 +40,19 @@ class RedPencil {
             price = newPrice
         }
         dateOfLastPriceChange = today
+    }
+
+    private boolean priceChangeIsWithinPromotionBoundaries(BigDecimal newPrice) {
+        def changePercentage = 1 - newPrice / price
+        changePercentage >= 0.05 && changePercentage <= 0.30
+    }
+
+    private boolean promotionIsInProgress() {
+        promotionalPrice != null
+    }
+
+    private boolean priceHasBeenStable(LocalDate today) {
+        today.isAfter(dateOfLastPriceChange.plusDays(29))
     }
 
 }
