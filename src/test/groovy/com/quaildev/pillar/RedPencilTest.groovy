@@ -77,4 +77,19 @@ class RedPencilTest extends Specification {
         redPencil.dateOfLastPriceChange == dateOfPriceChange
     }
 
+    def 'price reduction > 30% does not start a promotion'() {
+        given:
+        def dateOfPriceChange = LocalDate.of(2017, 3, 31)
+        mockClock.instant() >>> [LocalDate.of(2017, 3, 1) as Instant, dateOfPriceChange as Instant]
+        def redPencil = new RedPencil(10.00, mockClock)
+
+        when:
+        redPencil.price = 6.99
+
+        then:
+        redPencil.price == 6.99
+        redPencil.promotionalPrice == null
+        redPencil.dateOfLastPriceChange == dateOfPriceChange
+    }
+
 }
