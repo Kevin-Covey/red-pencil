@@ -113,9 +113,9 @@ class RedPencilTest extends Specification {
     def 'promotions last at most 30 days'() {
         given:
         initialPriceDate = LocalDate.of(2017, 3, 31)
-        expectedDateOfLastPriceChange = initialPriceDate.plusDays(31)
-        mockClock.instant() >>>
-                [initialPriceDate, initialPriceDate, expectedDateOfLastPriceChange].collect { it as Instant }
+        def priceChangeDate = initialPriceDate.plusDays(1)
+        def priceCheckedOn = priceChangeDate.plusDays(31)
+        mockClock.instant() >>> [initialPriceDate, priceChangeDate, priceCheckedOn].collect { it as Instant }
 
         def redPencil = new RedPencil(6.29, mockClock)
         redPencil.price = 5.49
@@ -123,7 +123,7 @@ class RedPencilTest extends Specification {
         expect:
         redPencil.price == 5.49
         redPencil.promotionalPrice == null
-        redPencil.dateOfLastPriceChange == initialPriceDate
+        redPencil.dateOfLastPriceChange == priceChangeDate
     }
 
     def priceChangeOccursAfter(int quantity, TemporalUnit increment) {
