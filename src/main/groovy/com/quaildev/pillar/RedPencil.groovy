@@ -50,7 +50,7 @@ class RedPencil {
         dateOfLastPriceChange = today
     }
 
-    private boolean priceChangeIsWithinPromotionBoundaries(BigDecimal newPrice) {
+    private boolean priceChangeIsWithinPromotionBoundaries(newPrice) {
         def changePercentage = 1 - newPrice / price
         changePercentage >= 0.05 && changePercentage <= 0.30
     }
@@ -59,7 +59,7 @@ class RedPencil {
         promotionalPrice != null
     }
 
-    private boolean priceHasBeenStable(LocalDate today) {
+    private boolean priceHasBeenStable(today) {
         today.isAfter(dateOfLastPriceChange.plusDays(29))
     }
 
