@@ -22,10 +22,14 @@ class RedPencil {
     }
 
     BigDecimal getPrice() {
-        if (promotionalPrice != null && datePromotionStarted.isBefore(now(clock).minus(30, DAYS))) {
+        if (promotionIsInProgress() && promotionIsOver()) {
             endPromotion(promotionalPrice)
         }
         return price
+    }
+
+    private boolean promotionIsOver() {
+        datePromotionStarted.isBefore(now(clock).minus(30, DAYS))
     }
 
     void setPrice(BigDecimal newPrice) {
