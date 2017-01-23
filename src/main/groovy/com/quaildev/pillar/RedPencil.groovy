@@ -31,6 +31,7 @@ class RedPencil {
 
     void setPrice(BigDecimal newPrice) {
         def today = now(clock)
+        getPrice()
         if (priceChangeIsWithinPromotionBoundaries(newPrice)) {
             if (promotionIsInProgress()) {
                 promotionalPrice = newPrice
