@@ -19,7 +19,8 @@ class RedPencil {
 
     void setPrice(Double newPrice) {
         def today = LocalDate.now(clock)
-        if (newPrice / price <= 0.95) {
+        def changePercentage = 1 - newPrice / price
+        if (changePercentage >= 0.05 && changePercentage <= 0.30) {
             if (today.isAfter(dateOfLastPriceChange.plusDays(29))) {
                 promotionalPrice = newPrice
             } else {
