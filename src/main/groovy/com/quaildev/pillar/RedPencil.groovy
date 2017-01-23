@@ -63,7 +63,6 @@ class RedPencil {
 
     private void endPromotion() {
         promotionalPrice = null
-        datePromotionStarted = null
     }
 
 }
