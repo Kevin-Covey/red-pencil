@@ -32,7 +32,7 @@ class RedPencil {
         def today = now(clock)
         def changePercentage = 1 - newPrice / price
         if (changePercentage >= 0.05 && changePercentage <= 0.30) {
-            if (today.isAfter(dateOfLastPriceChange.plusDays(29))) {
+            if (promotionalPrice != null || today.isAfter(dateOfLastPriceChange.plusDays(29))) {
                 promotionalPrice = newPrice
             } else {
                 price = newPrice
